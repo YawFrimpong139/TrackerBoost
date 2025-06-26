@@ -47,9 +47,10 @@ public class SecurityConfig {
                                 "/login/**",
                                 "/api/v1/user/register/**",
                                 "/error",
+                                "/swagger-ui/**",
                                 "/actuator/**"
                         ).permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").hasRole("ADMIN")
+                        .requestMatchers("/v3/api-docs/**", "/h2-console/**").hasRole("ADMIN")
 
                         // Project endpoints
                         .requestMatchers(HttpMethod.POST, "/api/projects").hasAnyRole("ADMIN", "MANAGER")
