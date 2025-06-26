@@ -193,4 +193,26 @@ public class TaskService {
                     "Serialization error: " + e.getMessage());
         }
     }
+
+
+    public List<TaskDTO> getTasksByUserId(Long userId) {
+        return taskRepository.findTasksWithDevelopersByUserId(userId).stream()
+                .map(task -> {
+                    TaskDTO dto = new TaskDTO(
+                            task.getId(),
+                            task.getTitle(),
+                            task.getDescription(),
+                            task.getStatus(),
+                            task.getDueDate(),
+                            task.getProject().getId()
+                    );
+                    dto.setAssignedDeveloperIds(
+                            task.getAssignedDevelopers().stream()
+                                    .map(Developer::getId)
+                                    .collect(Collectors.toSet())
+                    );
+                    return dto;
+                })
+                .toList();
+    }
 }

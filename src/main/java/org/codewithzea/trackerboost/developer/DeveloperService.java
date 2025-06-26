@@ -3,6 +3,8 @@ package org.codewithzea.trackerboost.developer;
 
 import org.codewithzea.trackerboost.audit.AuditLogService;
 import org.codewithzea.trackerboost.exception.ResourceNotFoundException;
+import org.codewithzea.trackerboost.user.UserEntity;
+import org.codewithzea.trackerboost.user.UserRepository;
 import org.codewithzea.trackerboost.util.MapperUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -18,8 +20,10 @@ import java.util.stream.Collectors;
 public class DeveloperService {
 
     private final DeveloperRepository developerRepository;
+    private final UserRepository userRepository;
     private final AuditLogService auditLogService;
     private final ObjectMapper objectMapper;
+
 
     public DeveloperDTO getDeveloperById(Long id) {
         Developer dev = developerRepository.findById(id)
@@ -36,7 +40,10 @@ public class DeveloperService {
         if (developerRepository.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("Email already in use.");
         }
-        Developer dev = MapperUtil.toDeveloper(dto);
+        UserEntity user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Developer dev = MapperUtil.toDeveloper(dto, user);
         Developer saved = developerRepository.save(dev);
         String payload = objectMapper.writeValueAsString(saved);
         auditLogService.log("CREATE", "Developer", saved.getId().toString(), payload);
@@ -70,6 +77,6 @@ public class DeveloperService {
         List<Developer> topDevs = developerRepository.findTop5ByTaskCount(PageRequest.of(0,5));
         return topDevs.stream().map(MapperUtil::toDeveloperDTO).collect(Collectors.toList());
     }
+
+
 }
-
-

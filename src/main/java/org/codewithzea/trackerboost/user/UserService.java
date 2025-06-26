@@ -1,16 +1,21 @@
 package org.codewithzea.trackerboost.user;
 
 import lombok.RequiredArgsConstructor;
+import org.codewithzea.trackerboost.task.Task;
+import org.codewithzea.trackerboost.task.TaskRepository;
 import org.codewithzea.trackerboost.user.dto.UserDTO;
 import org.codewithzea.trackerboost.user.dto.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
@@ -31,6 +36,10 @@ public class UserService {
 
         // Map to DTO
         return userMapper.toDTO(savedUser);
+    }
+
+    public List<Task> getUserTasks(Long userId) {
+        return taskRepository.findTasksWithDevelopersByUserId(userId);
     }
 
 }

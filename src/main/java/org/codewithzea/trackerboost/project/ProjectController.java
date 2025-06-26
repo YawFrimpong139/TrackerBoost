@@ -15,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/projects")
+@RequestMapping("/api/v1/projects")
 @RequiredArgsConstructor
 public class ProjectController {
 
@@ -90,6 +90,4 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 }
-
-
 

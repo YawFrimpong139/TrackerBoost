@@ -82,5 +82,3 @@ public class DeveloperController {
         return ResponseEntity.ok(developers);
     }
 }
-
-

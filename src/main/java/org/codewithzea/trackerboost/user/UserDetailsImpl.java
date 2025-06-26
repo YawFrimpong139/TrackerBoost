@@ -17,6 +17,9 @@ public class UserDetailsImpl implements UserDetails {
         return List.of(new SimpleGrantedAuthority(user.getRole().name()));
     }
 
+    public UserEntity getUserEntity() {
+        return user;
+    }
     @Override
     public String getPassword() {
         return user.getPassword();
@@ -24,7 +27,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getPassword();
+        return user.getEmail();
     }
 
     @Override

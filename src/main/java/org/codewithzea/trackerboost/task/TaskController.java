@@ -24,7 +24,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/v1/tasks")
 @RequiredArgsConstructor
 public class TaskController {
 
@@ -125,5 +125,3 @@ public class TaskController {
         return ResponseEntity.ok(counts);
     }
 }
-
-
