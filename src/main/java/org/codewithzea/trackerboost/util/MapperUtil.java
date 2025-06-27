@@ -5,6 +5,7 @@ package org.codewithzea.trackerboost.util;
 import org.codewithzea.trackerboost.project.*;
 import org.codewithzea.trackerboost.task.*;
 import org.codewithzea.trackerboost.developer.*;
+import org.codewithzea.trackerboost.user.UserEntity;
 
 
 import java.util.HashSet;
@@ -48,13 +49,14 @@ public class MapperUtil {
                 .build();
     }
 
-    public static Developer toDeveloper(DeveloperDTO dto) {
+    public static Developer toDeveloper(DeveloperDTO dto, UserEntity user) {
         if (dto == null) return null;
         return Developer.builder()
                 .id(dto.getId())
                 .name(dto.getName())
                 .email(dto.getEmail())
                 .skills(dto.getSkills())
+                .user(user)
                 .build();
     }
 

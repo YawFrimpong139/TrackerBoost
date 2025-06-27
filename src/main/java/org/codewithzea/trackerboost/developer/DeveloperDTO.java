@@ -21,6 +21,8 @@ public class DeveloperDTO {
     private String email;
 
     private Set<String> skills;
+
+    private Long userId;
 }
 
 

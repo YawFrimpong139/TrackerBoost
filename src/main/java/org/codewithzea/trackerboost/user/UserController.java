@@ -27,6 +27,7 @@ import java.util.Map;
 public class UserController {
 
     private final UserRegistrationService registrationService;
+    private final UserService userService;
     private final AuthService authService;
 
     @Operation(summary = "Register a new user")
@@ -79,5 +80,38 @@ public class UserController {
 
         log.debug("Fetching current user info for ID: {}", user.getId());
         return ResponseEntity.ok(user);
+    }
+
+    @Operation(summary = "Get user tasks",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/{userId}/tasks")
+    public ResponseEntity<?> getUserTasks(
+            @PathVariable Long userId,
+            @AuthenticationPrincipal(expression = "userEntity") UserEntity currentUser) {
+
+        // Check authentication
+        if (currentUser == null) {
+            log.warn("Unauthenticated access attempt to user tasks endpoint");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Authentication required"));
+        }
+
+
+        if (!currentUser.getId().equals(userId)) {
+            log.warn("Unauthorized access attempt by user {} to tasks of user {}",
+                    currentUser.getId(), userId);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Access denied"));
+        }
+
+        // Process request
+        try {
+            log.debug("Fetching tasks for user {}", userId);
+            return ResponseEntity.ok(userService.getUserTasks(userId));
+        } catch (Exception e) {
+            log.error("Error fetching tasks for user {}", userId, e);
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "Failed to fetch tasks"));
+        }
     }
 }

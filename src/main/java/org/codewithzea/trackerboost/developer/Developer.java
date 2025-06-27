@@ -7,6 +7,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import java.util.*;
 import org.codewithzea.trackerboost.task.*;
+import org.codewithzea.trackerboost.user.UserEntity;
 
 @Entity
 @Table(name = "developers")
@@ -20,6 +21,10 @@ public class Developer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserEntity user;
 
     @NotBlank @Size(max = 100)
     private String name;

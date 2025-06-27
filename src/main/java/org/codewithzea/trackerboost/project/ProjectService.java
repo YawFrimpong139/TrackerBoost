@@ -52,16 +52,16 @@ public class ProjectService {
             throw new IllegalArgumentException("Manager ID must be provided");
         }
 
-        // 2. Fetch manager (throws exception if not found)
+        // Fetch manager (throws exception if not found)
         UserEntity manager = userRepository.findById(dto.getManagerId())
                 .orElseThrow(() -> new ResourceNotFoundException("Manager not found with ID: " + dto.getManagerId()));
 
-        // 3. Verify manager role
+        // Verify manager role
         if (!manager.getRole().equals(Role.ROLE_MANAGER)) {
             throw new IllegalArgumentException("User with ID " + dto.getManagerId() + " is not a manager");
         }
 
-        // 4. Build and save project
+        // Build and save project
         Project project = Project.builder()
                 .name(dto.getName())
                 .description(dto.getDescription())

@@ -35,4 +35,11 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "WHERE t.id = :taskId AND d.id = :userId")
     boolean existsByIdAndAssignedDevelopers_Id(@Param("taskId") Long taskId,
                                                @Param("userId") Long userId);
+
+    @Query("SELECT t FROM Task t JOIN t.assignedDevelopers d WHERE d.user.id = :userId")
+    List<TaskDTO> findTasksByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT t FROM Task t JOIN FETCH t.assignedDevelopers d WHERE d.user.id = :userId")
+    List<Task> findTasksWithDevelopersByUserId(@Param("userId") Long userId);
+
 }

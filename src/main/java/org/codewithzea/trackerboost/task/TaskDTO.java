@@ -35,6 +35,19 @@ public class TaskDTO {
     private Long projectId;
 
     private Set<Long> assignedDeveloperIds;
+
+
+    public TaskDTO(Long id, String title, String description, String status,
+                   LocalDate dueDate, Long projectId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.dueDate = dueDate;
+        this.projectId = projectId;
+    }
 }
+
+
 
 

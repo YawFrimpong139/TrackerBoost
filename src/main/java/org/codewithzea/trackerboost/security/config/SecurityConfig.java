@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,6 +24,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -43,6 +47,7 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers(
                                 "/auth/**",
+                                "/api/auth/**",
                                 "/oauth2/**",
                                 "/login/**",
                                 "/api/v1/user/register/**",
@@ -53,18 +58,19 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/h2-console/**").hasRole("ADMIN")
 
                         // Project endpoints
-                        .requestMatchers(HttpMethod.POST, "/api/projects").hasAnyRole("ADMIN", "MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/api/projects/**").hasAnyRole("ADMIN", "MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/projects/summary").hasAnyRole("ADMIN", "MANAGER", "DEVELOPER", "CONTRACTOR")
-                        .requestMatchers(HttpMethod.GET, "/api/projects/**").hasAnyRole("ADMIN", "MANAGER", "DEVELOPER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/projects").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/projects/**").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/projects/summary").hasAnyRole("ADMIN", "MANAGER", "DEVELOPER", "CONTRACTOR")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/projects/**").hasAnyRole("ADMIN", "MANAGER", "DEVELOPER")
 
                         // Task endpoints
-                        .requestMatchers(HttpMethod.PUT, "/api/tasks/**").hasRole("DEVELOPER")
-                        .requestMatchers(HttpMethod.GET, "/api/tasks/**").hasAnyRole("ADMIN", "MANAGER", "DEVELOPER")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/tasks/**").hasRole("DEVELOPER")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/tasks/**").hasAnyRole("ADMIN", "MANAGER", "DEVELOPER")
 
                         // User management
-                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/user/{userId}/tasks").hasAnyRole("ADMIN", "MANAGER", "DEVELOPER")
 
                         .anyRequest().authenticated()
                 )
@@ -103,6 +109,7 @@ public class SecurityConfig {
                         })
                         .permitAll()
                 )
+                .httpBasic(withDefaults())
                 // JWT Filter Configuration
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session
@@ -111,6 +118,11 @@ public class SecurityConfig {
 
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
     @Bean
