@@ -51,7 +51,7 @@ public class DeveloperController {
     public ResponseEntity<DeveloperDTO> createDeveloper(@Valid @RequestBody DeveloperDTO dto) throws Exception {
         log.info("Creating new developer: {}", dto);
         DeveloperDTO createdDeveloper = developerService.createDeveloper(dto);
-        log.info("Created developer with ID: {}", createdDeveloper.getId());
+        log.info("Created developer with ID: {}", createdDeveloper.id());
         return ResponseEntity.ok(createdDeveloper);
     }
 
@@ -82,3 +82,5 @@ public class DeveloperController {
         return ResponseEntity.ok(developers);
     }
 }
+
+

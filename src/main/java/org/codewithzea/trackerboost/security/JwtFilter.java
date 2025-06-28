@@ -1,6 +1,7 @@
 package org.codewithzea.trackerboost.security;
 
 
+import org.codewithzea.trackerboost.user.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -8,16 +9,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.codewithzea.trackerboost.user.UserDetailsServiceImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
 
 @Component
 @RequiredArgsConstructor
@@ -67,7 +67,6 @@ public class JwtFilter extends OncePerRequestFilter {
             return bearerToken.substring(7);
         }
 
-        // 2. Check access_token cookie
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -77,7 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
-        // 3. Check query parameter (for testing only)
+
         String tokenParam = request.getParameter("token");
         if (tokenParam != null && !tokenParam.isBlank()) {
             return tokenParam;

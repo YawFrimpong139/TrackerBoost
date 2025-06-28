@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 public class DeveloperService {
 
     private final DeveloperRepository developerRepository;
-    private final UserRepository userRepository;
+    private final UserRepository  userRepository;
     private final AuditLogService auditLogService;
     private final ObjectMapper objectMapper;
 
@@ -37,10 +38,10 @@ public class DeveloperService {
 
     @Transactional
     public DeveloperDTO createDeveloper(DeveloperDTO dto) throws Exception {
-        if (developerRepository.existsByEmail(dto.getEmail())) {
+        if (developerRepository.existsByEmail(dto.email())) {
             throw new IllegalArgumentException("Email already in use.");
         }
-        UserEntity user = userRepository.findById(dto.getUserId())
+        UserEntity user = userRepository.findById(dto.userId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Developer dev = MapperUtil.toDeveloper(dto, user);
@@ -55,9 +56,9 @@ public class DeveloperService {
         Developer dev = developerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Developer not found with id " + id));
 
-        dev.setName(dto.getName());
-        dev.setEmail(dto.getEmail());
-        dev.setSkills(dto.getSkills());
+        dev.setName(dto.name());
+        dev.setEmail(dto.email());
+        dev.setSkills(dto.skills());
 
         Developer updated = developerRepository.save(dev);
         String payload = objectMapper.writeValueAsString(updated);
@@ -74,9 +75,10 @@ public class DeveloperService {
     }
 
     public List<DeveloperDTO> getTop5DevelopersByTaskCount() {
-        List<Developer> topDevs = developerRepository.findTop5ByTaskCount(PageRequest.of(0,5));
-        return topDevs.stream().map(MapperUtil::toDeveloperDTO).collect(Collectors.toList());
+        // Use exact size since we know it's 5
+        return developerRepository.findTop5ByTaskCount(PageRequest.of(0,5)).stream()
+                .map(MapperUtil::toDeveloperDTO)
+                .collect(Collectors.toCollection(() -> new ArrayList<>(5)));
     }
-
 
 }

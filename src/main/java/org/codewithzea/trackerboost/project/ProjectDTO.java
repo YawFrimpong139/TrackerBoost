@@ -1,37 +1,35 @@
 package org.codewithzea.trackerboost.project;
 
 
-
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
+
 import java.time.LocalDate;
+import java.util.Objects;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class ProjectDTO {
-    private Long id;
+public record ProjectDTO(
+        Long id,
 
-    @NotBlank @Size(max = 100)
-    private String name;
+        @NotBlank @Size(max = 100)
+        String name,
 
-    @Size(max = 500)
-    private String description;
+        @Size(max = 500)
+        String description,
 
-    @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate deadline;
+        @NotNull
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        LocalDate deadline,
 
-    @NotBlank
-    private String status;
+        @NotBlank
+        String status,
 
-    @NotNull(message = "Manager ID is required")
-    private Long managerId;
+        @NotNull(message = "Manager ID is required")
+        Long managerId
+) {
+    public ProjectDTO {
+        Objects.requireNonNull(deadline, "Deadline cannot be null");
+        Objects.requireNonNull(managerId, "Manager ID cannot be null");
+    }
 }
-
-
-

@@ -1,24 +1,27 @@
 package org.codewithzea.trackerboost.audit;
 
 
-
-import lombok.*;
+import lombok.Builder;
 import java.time.Instant;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class AuditLogDTO {
-    private String id;
-    private String actionType;
-    private String entityType;
-    private String entityId;
-    private Instant timestamp;
-    private String actorName;
-    private String payload;
+public record AuditLogDTO(
+        String id,
+        String actionType,
+        String entityType,
+        String entityId,
+        Instant timestamp,
+        String actorName,
+        String payload
+) {
+    public static class AuditLogDTOBuilder {
+        public AuditLogDTO build() {
+            if (this.timestamp == null) {
+                this.timestamp = Instant.now();
+            }
+            return new AuditLogDTO(id, actionType, entityType, entityId, timestamp, actorName, payload);
+        }
+    }
 }
-
 
 

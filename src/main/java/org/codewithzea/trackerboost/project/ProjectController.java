@@ -2,6 +2,7 @@ package org.codewithzea.trackerboost.project;
 
 
 
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,15 +51,15 @@ public class ProjectController {
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping
     public ResponseEntity<ProjectDTO> createProject(@Valid @RequestBody ProjectDTO dto) throws Exception {
-        log.info("Creating new project with manager ID: {}", dto.getManagerId());
+        log.info("Creating new project with manager ID: {}", dto.managerId());
 
-        if (dto.getManagerId() == null) {
+        if (dto.managerId() == null) {
             throw new IllegalArgumentException("Manager ID is required");
         }
 
         ProjectDTO createdProject = projectService.createProject(dto);
         log.info("Created project with ID: {} for manager ID: {}",
-                createdProject.getId(), dto.getManagerId());
+                createdProject.id(), dto.managerId());
 
         return ResponseEntity.ok(createdProject);
     }
@@ -90,4 +91,5 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 }
+
 

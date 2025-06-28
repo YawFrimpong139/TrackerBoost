@@ -2,28 +2,25 @@ package org.codewithzea.trackerboost.developer;
 
 
 
-import lombok.*;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
+
 import java.util.Set;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class DeveloperDTO {
-    private Long id;
+public record DeveloperDTO(
+        Long id,
 
-    @NotBlank @Size(max = 100)
-    private String name;
+        @NotBlank @Size(max = 100)
+        String name,
 
-    @Email @NotBlank
-    private String email;
+        @Email @NotBlank
+        String email,
 
-    private Set<String> skills;
+        Set<String> skills,
 
-    private Long userId;
+        Long userId
+) {
+
 }
-
-
 
