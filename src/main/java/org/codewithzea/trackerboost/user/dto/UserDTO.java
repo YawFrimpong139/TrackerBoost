@@ -1,15 +1,21 @@
 package org.codewithzea.trackerboost.user.dto;
 
-import lombok.Builder;
-import lombok.Data;
 import org.codewithzea.trackerboost.user.Role;
 
-@Data
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+
 @Builder
-public class UserDTO {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private Role role;
+public record UserDTO(
+        Long id,
+        @NotBlank String firstName,
+        @NotBlank String lastName,
+        @Email @NotBlank String email,
+        @NotNull Role role
+) {
+    public String fullName() {
+        return firstName + " " + lastName;
+    }
 }

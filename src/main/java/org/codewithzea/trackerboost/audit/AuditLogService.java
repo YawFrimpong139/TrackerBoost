@@ -1,6 +1,5 @@
 package org.codewithzea.trackerboost.audit;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
